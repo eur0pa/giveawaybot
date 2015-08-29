@@ -1,12 +1,13 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+import threading
+
 from time import sleep
-from threading import Thread
 
 from Libs import IRC
 from Libs import Lurker
-from Libs import Utils
+from Libs import Globals
 
 
 def read_backlog(backlog_file):
@@ -40,26 +41,24 @@ def read_config(cfg_file):
 
 
 def main():
-    utils = Utils.Utils()
     irc_thread = None
     lurk_thread = None
     threads = []
 
-    CONFIG_FILE = 'bot.ini'
-    BACKLOG_FILE = 'giveaway.txt'
-
-    config = read_config(CONFIG_FILE)
-    backlog = read_backlog(BACKLOG_FILE)
-
+    utils = Globals.Utils()
     utils.Print("reddit giveaway grabber\n")
+
+    Globals.Config = read_config(Globals.CONFIG_FILE)
+    Globals.Backlog = read_backlog(Globals.BACKLOG_FILE)
 
     while threading.active_count() > 0:
         if not irc_thread or not irc_thread.is_alive():
             utils.Print('starting irc thread...\n')
-            irc_thread = IRC.Irc(config, backlog)
+            irc_thread = IRC.Client()
             irc_thread.daemon = True
             threads.append(irc_thread)
             irc_thread.start()
+            sleep(1)
         irc_thread.join(1)
 
 if __name__ == '__main__':
