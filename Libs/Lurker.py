@@ -9,16 +9,17 @@ class Lurk(threading.Thread):
     """docstring for Lurk"""
     def __init__(self, irc_thread):
         self.thread = threading.Thread.__init__(self)
+        self._stop = threading.Event()
         self.irc = irc_thread
         self.r = praw.Reddit('Diochan PRAW Test')
         self.u = Globals.Utils()
 
     def run(self):
-        while True:
+        while not self._stop.isSet():
             self._lurk()
 
     def stop(self):
-        self._Thread__stop()
+        self._stop.set()
 
     def _lurk(self):
         for sub in Globals.Config['Subs']:
