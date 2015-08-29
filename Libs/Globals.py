@@ -98,7 +98,3 @@ class Utils(object):
         """
         with open(BACKLOG_FILE, 'a') as f:
             f.write(',' + id)
-
-    def reset(self):
-        """resets filters"""
-        del Config['CustomFilter'][:]
