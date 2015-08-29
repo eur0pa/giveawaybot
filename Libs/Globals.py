@@ -82,8 +82,6 @@ class Utils(object):
     def sprint(self, msg):
         """a statusbar-like print for console
 
-        prints the given string with carriage-return only
-
         args:
             msg: the string to print
         """
