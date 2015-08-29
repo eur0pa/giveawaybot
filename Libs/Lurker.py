@@ -1,6 +1,5 @@
 import time
 import threading
-
 import praw
 
 import Globals
@@ -15,31 +14,31 @@ class Lurk(threading.Thread):
         self.u = Globals.Utils()
 
     def run(self):
-        self._lurk()
+        while True:
+            self._lurk()
 
     def stop(self):
         self._Thread__stop()
 
     def _lurk(self):
-        while True:
-            for sub in Globals.Config['Subs']:
-                subreddit = self.r.get_subreddit(sub)
-                self.u.pprint('lurking /r/%s' % sub)
-                for post in subreddit.get_new(limit=2):
-                    if post.id in Globals.Backlog:
-                        continue
-                    self.u.pprint('checking /r/%s post #%s' % (sub, post.id))
-                    Globals.Backlog[post.id] = True
-                    if self._check_submission(post, sub):
-                        s = post.short_link + ' - ' + post.title
-                        t = threading.Thread(
-                            target=self.irc._send,
-                            args=(s, 0, None))
-                        t.daemon = True
-                        t.start()
-                        self.u.add_backlog_entry(post.id)
-                        self.u.pprint(s + '\n')
-                time.sleep(3)
+        for sub in Globals.Config['Subs']:
+            subreddit = self.r.get_subreddit(sub)
+            self.u.sprint('lurking /r/%s' % sub)
+            for post in subreddit.get_new(limit=2):
+                if post.id in Globals.Backlog:
+                    continue
+                self.u.sprint('checking /r/%s post #%s' % (sub, post.id))
+                Globals.Backlog[post.id] = True
+                if self._check_submission(post, sub):
+                    s = post.short_link + ' - ' + post.title
+                    t = threading.Thread(
+                        target=self.irc.sendirc,
+                        args=(s, 0, None))
+                    t.daemon = True
+                    t.start()
+                    self.u.add_backlog_entry(post.id)
+                    self.u.sprint(s + '\n')
+            time.sleep(3)
 
     def _check_submission(self, post, sub):
         title = unicode(post.title).lower()
