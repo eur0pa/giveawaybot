@@ -20,8 +20,6 @@ class Client(threading.Thread):
         self._idle()
 
     def stop(self):
-        self._quit()
-        time.sleep(1)
         self.s.close()
         self._Thread_stop()
 
@@ -43,6 +41,8 @@ class Client(threading.Thread):
 
     def _quit(self):
         self.sendirc('QUIT :*poff*', type=1)
+        time.sleep(1)
+        self.stop()
 
     def _idle(self):
         while True:
