@@ -23,7 +23,7 @@ class Client(threading.Thread):
         self._quit()
         self._Thread_stop()
 
-    def _send(self, msg, type=0, dest=None):
+    def send(self, msg, type=0, dest=None):
         if not dest:
             dest = self.chan
         if type == 0:
@@ -34,13 +34,13 @@ class Client(threading.Thread):
 
     def _login(self):
         self.s.connect((self.host, self.port))
-        self._send('NICK %s' % self.nick, type=1)
-        self._send('USER %s %s 0: %s' % (self.nick, self.host, self.nick), type=1)
-        self._send('JOIN %s' % self.chan, type=1)
+        self.send('NICK %s' % self.nick, type=1)
+        self.send('USER %s %s 0: %s' % (self.nick, self.host, self.nick), type=1)
+        self.send('JOIN %s' % self.chan, type=1)
         time.sleep(1)
 
     def _quit(self):
-        self._send('QUIT *poff*', type=1)
+        self.send('QUIT :*poff*', type=1)
         time.sleep(1)
         self.s.close()
 
@@ -53,7 +53,7 @@ class Client(threading.Thread):
                 clean = line.split()
             try:
                 if clean[0] == 'PING':
-                    self._send("PONG %s" % clean[1], type=1)
+                    self.send("PONG %s" % clean[1], type=1)
 
                 elif clean[1] == 'PRIVMSG':
                     if clean[2] != self.chan:
@@ -73,20 +73,20 @@ class Client(threading.Thread):
         if cmd == '!stato':
             gcount = len(Globals.Backlog)
             fcount = len(Globals.Config['CustomFilter'])
-            self._send('%d giveaway nel backlog, %d filtri attivi' % (gcount, fcount))
+            self.send('%d giveaway nel backlog, %d filtri attivi' % (gcount, fcount))
 
         elif cmd == '!poff':
             self.stop()
 
         elif cmd == '!filtra':
             if len(arg) < 4:
-                self._send('uso: !filtra <almeno 5 char porco dio>')
+                self.send('uso: !filtra <almeno 5 char porco dio>')
                 return
             Globals.Config['CustomFilter'].append(arg)
             count = len(Globals.Config['CustomFilter'])
-            self._send('%s filtrato, %d filtri attivi.' % (arg, count))
+            self.send('%s filtrato, %d filtri attivi.' % (arg, count))
 
         elif cmd == '!filtri':
             count = len(Globals.Config['CustomFilter'])
             filtri = ', '.join(Globals.Config['CustomFilter'])
-            self._send('%d filtri attivi: %s.' % (count, filtri))
+            self.send('%d filtri attivi: %s.' % (count, filtri))
