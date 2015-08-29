@@ -1,6 +1,8 @@
 import time
 import threading
 
+import praw
+
 import Globals
 
 
@@ -10,7 +12,7 @@ class Lurk(threading.Thread):
         self.thread = threading.Thread.__init__(self)
         self.irc = irc_thread
         self.r = praw.Reddit('Diochan PRAW Test')
-        u = Globals.Utils()
+        self.u = Globals.Utils()
 
     def run(self):
         self._lurk()
@@ -22,21 +24,21 @@ class Lurk(threading.Thread):
         while True:
             for sub in Globals.Config['Subs']:
                 subreddit = self.r.get_subreddit(sub)
-                u.Print('lurking /r/%s' % sub)
+                self.u.pprint('lurking /r/%s' % sub)
                 for post in subreddit.get_new(limit=2):
                     if post.id in Globals.Backlog:
                         continue
-                    u.Print('checking /r/%s post #s' % (sub, post.id))
+                    self.u.pprint('checking /r/%s post #%s' % (sub, post.id))
                     Globals.Backlog[post.id] = True
                     if self._check_submission(post, sub):
                         s = post.short_link + ' - ' + post.title
                         t = threading.Thread(
                             target=self.irc._send,
-                            args(s, 0, irc_chan))
+                            args=(s, 0, None))
                         t.daemon = True
                         t.start()
-                        u.add_backlog_entry(post.id)
-                        u.print(s + '\n')
+                        self.u.add_backlog_entry(post.id)
+                        self.u.pprint(s + '\n')
                 time.sleep(3)
 
     def _check_submission(self, post, sub):
