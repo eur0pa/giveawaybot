@@ -76,7 +76,7 @@ class Client(threading.Thread):
             self.sendirc('%d giveaway nel backlog, %d filtri attivi' % (gcount, fcount))
 
         elif cmd == '!poff':
-            self.stop()
+            self._quit()
 
         elif cmd == '!filtra':
             if len(arg) < 4:
