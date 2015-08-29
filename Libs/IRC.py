@@ -21,6 +21,7 @@ class Client(threading.Thread):
 
     def stop(self):
         self._quit()
+        time.sleep(1)
         self.s.close()
         self._Thread_stop()
 
@@ -30,7 +31,7 @@ class Client(threading.Thread):
         if type == 0:
             s = u'PRIVMSG %s :%s\n' % (dest, msg)
         elif type == 1:
-            s = u'%s\n' % msg
+            s = '%s\n' % msg
         self.s.send(s)
 
     def _login(self):
@@ -41,8 +42,7 @@ class Client(threading.Thread):
         time.sleep(1)
 
     def _quit(self):
-        self.sendirc('QUIT :*poff*\n', type=1)
-        time.sleep(1)
+        self.sendirc('QUIT :*poff*', type=1)
 
     def _idle(self):
         while True:
