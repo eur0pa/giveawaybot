@@ -9,23 +9,52 @@ Config = {}
 Backlog = {}
 
 
-class Save(object):
-    """not implemented yet"""
-    def __init__(self):
-        super(Save, self).__init__()
-        self.save_config(CONFIG_FILE)
-
-    def save_config(self, config_file):
-        raise NotImplementedError
-
-
 class Init(object):
     """Inits backlog and config global variables"""
-
     def __init__(self):
         super(Init, self).__init__()
-        self.read_config(CONFIG_FILE)
-        self.read_backlog(BACKLOG_FILE)
+        u = Utils()
+        u.read_config(CONFIG_FILE)
+        u.read_backlog(BACKLOG_FILE)
+
+
+class Utils(object):
+    """miscellaneus utilities"""
+    def __init__(self):
+        super(Utils, self).__init__()
+
+    def sprint(self, msg):
+        """a statusbar-like print for console
+
+        args:
+            msg: the string to print
+        """
+        clock = "[" + time.asctime(time.localtime()) + "] "
+        sys.stdout.write("\r" + clock + msg)
+        sys.stdout.write("\033[K")
+        sys.stdout.flush()
+
+    def add_backlog_entry(self, id):
+        """adds an entry to the backlog file
+
+        args:
+            id: the entry to add
+        """
+        with open(BACKLOG_FILE, 'a') as f:
+            f.write(',' + id)
+
+    def save_config(self, config_file):
+        """saves the current config to disk
+
+        args:
+            config_file: the config file to write to
+        """
+        with open(config_file, 'w') as f:
+            for section in Config:
+                f.write('>>%s\n' % section)
+                for entry in Config[key]:
+                    f.write('%s\n' % entry)
+                f.write('\n')
 
     def read_config(self, config_file):
         """reads the config file
@@ -72,29 +101,3 @@ class Init(object):
         with open(backlog_file, 'r') as f:
             for entry in f.read().split(','):
                 Backlog[entry] = True
-
-
-class Utils(object):
-    """miscellaneus utilities"""
-    def __init__(self):
-        super(Utils, self).__init__()
-
-    def sprint(self, msg):
-        """a statusbar-like print for console
-
-        args:
-            msg: the string to print
-        """
-        clock = "[" + time.asctime(time.localtime()) + "] "
-        sys.stdout.write("\r" + clock + msg)
-        sys.stdout.write("\033[K")
-        sys.stdout.flush()
-
-    def add_backlog_entry(self, id):
-        """adds an entry to the backlog file
-
-        args:
-            id: the entry to add
-        """
-        with open(BACKLOG_FILE, 'a') as f:
-            f.write(',' + id)
