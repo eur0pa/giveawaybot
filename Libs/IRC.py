@@ -83,6 +83,10 @@ class Client(threading.Thread):
             self.u.save_config()
             self.sendirc('configurazione salvata')
 
+        elif cmd == '!reload':
+            self.u.read_config()
+            self.sendirc('configurazione ricaricata')
+
         elif cmd == '!filtra':
             if len(arg) < 4:
                 self.sendirc('uso: !filtra <almeno 5 char porco dio>')
