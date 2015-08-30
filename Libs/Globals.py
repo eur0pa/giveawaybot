@@ -14,8 +14,8 @@ class Init(object):
     def __init__(self):
         super(Init, self).__init__()
         u = Utils()
-        u.read_config(CONFIG_FILE)
-        u.read_backlog(BACKLOG_FILE)
+        u.read_config()
+        u.read_backlog()
 
 
 class Utils(object):
@@ -43,20 +43,20 @@ class Utils(object):
         with open(BACKLOG_FILE, 'a') as f:
             f.write(',' + id)
 
-    def save_config(self, config_file):
+    def save_config(self):
         """saves the current config to disk
 
         args:
             config_file: the config file to write to
         """
-        with open(config_file, 'w') as f:
+        with open(CONFIG_FILE, 'w') as f:
             for section in Config:
                 f.write('>>%s\n' % section)
                 for entry in Config[key]:
                     f.write('%s\n' % entry)
                 f.write('\n')
 
-    def read_config(self, config_file):
+    def read_config(self):
         """reads the config file
 
         reads the config file specified in the config_file argument and
@@ -65,7 +65,7 @@ class Utils(object):
         args:
             config_file: the config file to read and parse
         """
-        with open(config_file) as f:
+        with open(CONFIG_FILE) as f:
             for line in f.readlines():
                 line = line.strip()
                 if not line:
@@ -80,7 +80,7 @@ class Utils(object):
                         values.append(line)
                 Config[section] = values
 
-    def read_backlog(self, backlog_file):
+    def read_backlog(self):
         """reads the backlog file
 
         reads the backlog file specified in the backlog_file argument and
@@ -92,12 +92,12 @@ class Utils(object):
         raises: IOError when the file doesn't exist, and proceeds to create one
         """
         try:
-            f = open(backlog_file)
+            f = open(BACKLOG_FILE)
             f.close()
         except IOError:
-            with open(backlog_file, 'w') as f:
+            with open(BACKLOG_FILE, 'w') as f:
                 f.write('bogus')
 
-        with open(backlog_file, 'r') as f:
+        with open(BACKLOG_FILE, 'r') as f:
             for entry in f.read().split(','):
                 Backlog[entry] = True
