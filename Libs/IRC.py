@@ -81,11 +81,11 @@ class Client(threading.Thread):
 
         elif cmd == '!salva':
             self.u.save_config()
-            self.sendirc('configurazione salvata')
+            self.sendirc('configurazione salvata.')
 
         elif cmd == '!reload':
             self.u.read_config()
-            self.sendirc('configurazione ricaricata')
+            self.sendirc('configurazione ricaricata.')
 
         elif cmd == '!filtra':
             if len(arg) < 4:
