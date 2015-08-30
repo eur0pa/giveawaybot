@@ -108,8 +108,9 @@ class Client(threading.Thread):
             elif arg in Globals.Config['CustomFilter']:
                 Globals.Config['CustomFilter'].remove(arg)
                 self.sendirc('%s rimosso dai filtri.' % arg)
+
             else:
                 self.sendirc('non ho trovato %s nei filtri.' % arg)
                 return
 
-            u.save_config()
+            self.u.save_config()
