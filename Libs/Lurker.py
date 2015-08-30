@@ -56,5 +56,4 @@ class Lurk(threading.Thread):
         if sub in Globals.Config['SuperSubs']: return 1
         if sub in Globals.Config['DealsSubs']: return 1
         if url in Globals.Config['IncludeUrls'] and not post.is_self: return 1
-        if any(i in title for i in Globals.Config['Include']) or \
-           any(i in text for i in Globals.Config['Include']): return 1
+        if any(i in title for i in Globals.Config['Include']): return 1
