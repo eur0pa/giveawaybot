@@ -87,9 +87,12 @@ class Client(threading.Thread):
             if len(arg) < 4:
                 self.sendirc('uso: !filtra <almeno 5 char porco dio>')
                 return
-            Globals.Config['CustomFilter'].append(arg)
-            count = len(Globals.Config['CustomFilter'])
-            self.sendirc('%s filtrato, %d filtri attivi.' % (arg, count))
+            if arg not in Globals.Config['CustomFilter']:
+                Globals.Config['CustomFilter'].append(arg)
+                count = len(Globals.Config['CustomFilter'])
+                self.sendirc('%s filtrato, %d filtri attivi.' % (arg, count))
+            else:
+                self.sendirc('%s e\' gia\' nei filtri.')
 
         elif cmd == '!filtri':
             count = len(Globals.Config['CustomFilter'])
