@@ -48,12 +48,13 @@ class Lurk(threading.Thread):
         url = unicode(post.url).lower()
         sub = sub.lower()
 
-        if title in Globals.Config['Exclude']: return 0
-        if url in Globals.Config['ExcludeUrls']: return 0
-        if flair in Globals.Config['ExcludeFlairs']: return 0
+        if any(x in title for x in Globals.Config['CustomFilter']): return 0
+        if any(x in title for x in Globals.Config['Exclude']): return 0
+        if any(x in url for x in Globals.Config['ExcludeUrls']): return 0
+        if any(x in flair for x in Globals.Config['ExcludeFlairs']): return 0
 
         if sub in Globals.Config['SuperSubs']: return 1
         if sub in Globals.Config['DealsSubs']: return 1
         if url in Globals.Config['IncludeUrls'] and not post.is_self: return 1
-        if title in Globals.Config['Include'] or \
-           text in Globals.Config['Include']: return 1
+        if any(i in title for i in Globals.Config['Include']) or \
+           any(i in text for i in Globals.Config['Include']): return 1
