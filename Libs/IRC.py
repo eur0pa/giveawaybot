@@ -103,17 +103,13 @@ class Client(threading.Thread):
             if len(arg) < 4:
                 self.sendirc('uso: !rimuovi <filtro|tutti>')
                 return
-
             if arg == 'tutti':
                 del Globals.Config['CustomFilter'][:]
                 self.sendirc('rimossi tutti i filtri.')
-
             elif arg in Globals.Config['CustomFilter']:
                 Globals.Config['CustomFilter'].remove(arg)
                 self.sendirc('%s rimosso dai filtri.' % arg)
-
             else:
                 self.sendirc('non ho trovato %s nei filtri.' % arg)
                 return
-
             self.u.save_config()
