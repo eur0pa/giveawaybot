@@ -11,6 +11,7 @@ class Client(threading.Thread):
         threading.Thread.__init__(self)
         self._stop = threading.Event()
         self.s = socket.socket()
+        self.u = Globals.Utils()
 
         self.host = Globals.Config['IRC'][0]
         self.port = int(Globals.Config['IRC'][1])
@@ -75,7 +76,12 @@ class Client(threading.Thread):
             self.sendirc('%d giveaway nel backlog, %d filtri attivi' % (gcount, fcount))
 
         elif cmd == '!poff':
+            self.sendirc('*poff*')
             self.stop()
+
+        elif cmd == '!salva':
+            self.u.save_config()
+            self.sendirc('configurazione salvata')
 
         elif cmd == '!filtra':
             if len(arg) < 4:
@@ -89,3 +95,17 @@ class Client(threading.Thread):
             count = len(Globals.Config['CustomFilter'])
             filtri = ', '.join(Globals.Config['CustomFilter'])
             self.sendirc('%d filtri attivi: %s.' % (count, filtri))
+
+        elif cmd == '!rimuovi':
+            if len(arg) < 4:
+                self.sendirc('uso: !rimuovi <filtro|tutti>')
+                return
+            if arg == 'tutti':
+                del Globals.Config['CustomFilter'][:]
+                self.sendirc('rimossi tutti i filtri.')
+                return
+            if arg in Globals.Config['CustomFilter']:
+                Globals.Config['CustomFilter'].remove(arg)
+                self.sendirc('%s rimosso dai filtri.')
+            else:
+                self.sendirc('non ho trovato %s nei filtri.')
