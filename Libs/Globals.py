@@ -52,7 +52,7 @@ class Utils(object):
         with open(CONFIG_FILE, 'w') as f:
             for section in Config:
                 f.write('>>%s\n' % section)
-                for entry in Config[key]:
+                for entry in Config[section]:
                     f.write('%s\n' % entry)
                 f.write('\n')
 
