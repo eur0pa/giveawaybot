@@ -106,6 +106,6 @@ class Client(threading.Thread):
                 return
             if arg in Globals.Config['CustomFilter']:
                 Globals.Config['CustomFilter'].remove(arg)
-                self.sendirc('%s rimosso dai filtri.')
+                self.sendirc('%s rimosso dai filtri.' % arg)
             else:
-                self.sendirc('non ho trovato %s nei filtri.')
+                self.sendirc('non ho trovato %s nei filtri.' % arg)
