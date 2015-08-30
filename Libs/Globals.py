@@ -44,7 +44,7 @@ class Utils(object):
             f.write(',' + id)
 
     def save_config(self):
-        """saves the current config to disk
+        """saves and reloads the current config to disk
 
         args:
             config_file: the config file to write to
@@ -55,6 +55,7 @@ class Utils(object):
                 for entry in Config[section]:
                     f.write('%s\n' % entry)
                 f.write('\n')
+        self.read_config()
 
     def read_config(self):
         """reads the config file
