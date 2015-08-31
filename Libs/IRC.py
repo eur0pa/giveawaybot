@@ -73,7 +73,7 @@ class Client(threading.Thread):
         if cmd == '!stato':
             gcount = len(Globals.Backlog)
             fcount = len(Globals.Config['CustomFilter'])
-            self.sendirc('%d giveaway nel backlog, %d filtri attivi' % (gcount, fcount))
+            self.sendirc('rev. %s: %d giveaway nel backlog, %d filtri attivi' % (Globals.Version, gcount, fcount))
 
         elif cmd == '!poff':
             self.sendirc('*poff*')

@@ -20,8 +20,9 @@ def main():
     lurk_thread = None
     threads = []
 
+    Globals.Init()
     u = Globals.Utils()
-    u.sprint("reddit giveaway grabber\n")
+    u.sprint("reddit giveaway grabber rev. %s\n" % Globals.Version)
 
     while threading.active_count() > 0:
         if not irc_thread or not irc_thread.is_alive():

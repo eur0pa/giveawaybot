@@ -1,5 +1,7 @@
+import os
 import sys
 import time
+import re
 
 
 CONFIG_FILE = 'bot.ini'
@@ -7,15 +9,18 @@ BACKLOG_FILE = 'giveaway.txt'
 
 Config = {}
 Backlog = {}
+Version = None
 
 
 class Init(object):
     """Inits backlog and config global variables"""
     def __init__(self):
         super(Init, self).__init__()
+        global Version
         u = Utils()
         u.read_config()
         u.read_backlog()
+        Version = u.get_version()
 
 
 class Utils(object):
@@ -102,3 +107,32 @@ class Utils(object):
         with open(BACKLOG_FILE, 'r') as f:
             for entry in f.read().split(','):
                 Backlog[entry] = True
+
+    def get_version(self):
+        """sets the abbreviated commit hash a la git rev-parse --short HEAD"""
+        file_path = None
+        res = None
+        _ = os.path.dirname(__file__)
+        while True:
+            file_path = os.path.join(_, '.git', 'HEAD')
+            if os.path.exists(file_path):
+                break
+            else:
+                file_path = None
+                if _ == os.path.dirname(_):
+                    break
+                else:
+                    _ = os.path.dirname(_)
+        while True:
+            if file_path and os.path.isfile(file_path):
+                with open(file_path, 'r') as f:
+                    res = f.read()
+                    if res.startswith('ref: '):
+                        file_path = os.path.join(_, '.git', res.replace('ref: ', '')).strip()
+                    else:
+                        res = re.match(r'(?i)[0-9a-f]{32}', res)
+                        res = res.group(0) if res else None
+                        break
+            else:
+                break
+        return res[:7] if res else None
