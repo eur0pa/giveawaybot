@@ -6,11 +6,10 @@ import sys
 import time
 import threading
 
-from Libs import IRC
-from Libs import Lurker
-from Libs import Globals
+from lib import common
+from lib import irc
+from lib import lurker
 
-# default encoding hack
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -20,15 +19,14 @@ def main():
     lurk_thread = None
     threads = []
 
-    Globals.Init()
-    u = Globals.Utils()
-    u.sprint("reddit giveaway grabber rev. %s\n" % Globals.Version)
+    common.init_globals()
+    common.sprint("reddit giveaway grabber [rev. %s]\n" % common.Version)
 
     while threading.active_count() > 0:
         if not irc_thread or not irc_thread.is_alive():
-            Globals.Init()
-            u.sprint('starting irc thread...\n')
-            irc_thread = IRC.Client()
+            common.init_globals()
+            common.sprint('starting irc thread...\n')
+            irc_thread = irc.Client()
             irc_thread.daemon = True
             threads.append(irc_thread)
             irc_thread.start()
@@ -36,8 +34,8 @@ def main():
         irc_thread.join(1)
 
         if not lurk_thread or not lurk_thread.is_alive():
-            u.sprint('starting reddit thread...\n')
-            lurk_thread = Lurker.Lurk(irc_thread)
+            common.sprint('starting reddit thread...\n')
+            lurk_thread = lurker.Lurk(irc_thread)
             lurk_thread.daemon = True
             threads.append(lurk_thread)
             lurk_thread.start()
