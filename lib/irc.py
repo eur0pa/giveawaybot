@@ -49,24 +49,29 @@ class Client(threading.Thread):
     def _idle(self):
         cmd = None
         arg = None
+
         buf = self.s.recv(1024).strip().split('\n')
         for line in buf:
             clean = line.split()
-        try:
-            if clean[0] == 'PING':
-                self.sendirc("PONG %s" % clean[1], type=1)
 
-            elif clean[1] == 'PRIVMSG':
-                if clean[2] != self.chan:
-                    return
-                try:
-                    cmd = line.split(':')[2].split()[0]
-                    arg = line.split(':')[2][len(cmd)+1:]
-                    self._handle_commands(cmd, arg)
-                except:
-                    pass
-        except Exception, err:
-            pass
+        if len(clean) < 2:
+            return
+
+        if clean[0] == 'PING':
+            self.sendirc('PONG %s' % clean[1], type=1)
+
+        elif clean[0] == 'ERROR':
+            self._quit()
+
+        elif clean[1] == 'PRIVMSG':
+            if clean[2] != self.chan:
+                return
+            try:
+                cmd = line.split(':')[2].split()[0]
+                arg = line.split(':')[2][len(cmd)+1:]
+            except:
+                return
+            self._handle_commands(cmd, arg)
 
     def _handle_commands(self, cmd, arg):
         if cmd == '!stato':
