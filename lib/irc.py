@@ -10,7 +10,6 @@ class Client(threading.Thread):
         threading.Thread.__init__(self)
         self._stop = threading.Event()
         self.s = socket.socket()
-
         self.host = common.Config['IRC'][0]
         self.port = int(common.Config['IRC'][1])
         self.nick = common.Config['IRC'][2]
