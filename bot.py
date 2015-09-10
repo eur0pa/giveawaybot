@@ -35,8 +35,10 @@ def main():
             lurk_thread.daemon = True
             lurk_thread.start()
 
-        irc_thread.join(1)
-        lurk_thread.join(1)
+        irc_thread.join(0)
+        lurk_thread.join(0)
+
+        time.sleep(1)
 
 
 if __name__ == '__main__':
